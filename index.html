@@ -19,7 +19,6 @@
 </head>
 <body>
   <h1>Tokyo Olympics 2020</h1>
-  <p class="byline">Author: Tyler Tan • Date: 19 Oct 2025</p>
 
 
   <div class="grid">
@@ -33,6 +32,11 @@
       <div id="chart2" class="chart"></div>
     </section>
 
+    <section>
+      <h2>World Medal Distribution</h2>
+      <div id="chart3" class="chart"></div>
+    </section>
+
     <!-- <section>
       <h2>Coaches vs Athletes by NOC (size = Total Medals)</h2>
       <div id="chart3" class="chart"></div>
@@ -42,7 +46,7 @@
   <script>
     vegaEmbed("#chart1", "charts/chart1_medals_top20.vg.json", {actions:false});
     vegaEmbed("#chart2", "charts/chart2_gender_by_discipline.vg.json", {actions:false});
-    vegaEmbed("#chart3", "charts/chart3_coaches_vs_athletes.vg.json", {actions:false});
+    vegaEmbed("#chart3", "charts/chart4_map.vg.json", {actions:false});
   </script>
 </body>
 </html>

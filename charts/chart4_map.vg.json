@@ -1,0 +1,57 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Total medals by country (simple map)",
+  "width": 800,
+  "height": 450,
+  "background": "#ffffff",
+  "projection": {"type": "equirectangular"},
+
+  "layer": [
+    {
+      "data": {
+        "url": "https://cdn.jsdelivr.net/npm/vega-datasets@2.3.0/data/world-110m.json",
+        "format": {"type": "topojson", "feature": "countries"}
+      },
+      "mark": {"type": "geoshape", "fill": "#e3e4e8", "stroke": "#5c5c5c", "strokeWidth": 0.5}
+    },
+
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/Tegosaurus1611/FIT3179-Data-Visualisation-2/main/Data/country_medals.csv"
+      },
+      "transform": [
+        {"calculate": "toNumber(datum.Gold)", "as": "GoldNum"},
+        {"calculate": "toNumber(datum.Silver)", "as": "SilverNum"},
+        {"calculate": "toNumber(datum.Bronze)", "as": "BronzeNum"},
+        {"calculate": "datum.GoldNum + datum.SilverNum + datum.BronzeNum", "as": "TotalMedals"},
+        {
+          "lookup": "Country",
+          "from": {
+            "data": {
+              "url": "https://cdn.jsdelivr.net/gh/gavinr/world-countries-centroids@v1/dist/countries.csv"
+            },
+            "key": "COUNTRY",
+            "fields": ["latitude", "longitude"]
+          }
+        },
+        {"filter": "isValid(datum.latitude) && isValid(datum.longitude) && isFinite(datum.TotalMedals) && datum.TotalMedals > 0"}
+      ],
+      "mark": {"type": "circle", "opacity": 0.9, "stroke": "white", "strokeWidth": 0.5},
+      "encoding": {
+        "longitude": {"field": "longitude", "type": "quantitative"},
+        "latitude": {"field": "latitude", "type": "quantitative"},
+        "size": {
+          "field": "TotalMedals",
+          "type": "quantitative",
+          "title": "Total medals",
+          "scale": {"range": [0, 1800]}
+        },
+        "color": {"value": "#1f77b4"},
+        "tooltip": [
+          {"field": "Country", "title": "Country"},
+          {"field": "TotalMedals", "title": "Total medals"}
+        ]
+      }
+    }
+  ]
+}
