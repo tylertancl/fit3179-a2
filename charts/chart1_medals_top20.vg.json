@@ -6,22 +6,40 @@
   "height": 540,
   "data": {
     "url": "https://raw.githubusercontent.com/tylertancl/fit3179-a2/main/data/medals_total.csv",
-    "format": {
-      "type": "csv",
-      "parse": {
-        "Gold": "number", "gold": "number",
-        "Silver": "number", "silver": "number",
-        "Bronze": "number", "bronze": "number",
-        "Total": "number", "total": "number", "TOTAL": "number"
-      }
-    }
+    "format": {"type": "csv"}
   },
   "transform": [
+
     {
       "calculate": "(datum.NOC || datum.noc || datum['Team/NOC'] || datum.Team || datum.team || datum.Country || datum.country || 'Unknown')",
       "as": "Country"
     },
-    {"calculate": "toNumber(datum.Total || datum.total || datum.TOTAL)", "as": "TotalNum"},
+
+
+    {
+      "calculate": "(datum.Total || datum.total || datum.TOTAL || datum['Total medals'] || datum['Total Medals'] || '')",
+      "as": "TotalRaw"
+    },
+    {
+      "calculate": "(datum.Gold || datum.gold || datum['Gold Medal'] || datum['Gold Medals'] || datum.Gold_Medals || datum.gold_medals || '')",
+      "as": "GoldRaw"
+    },
+    {
+      "calculate": "(datum.Silver || datum.silver || datum['Silver Medal'] || datum['Silver Medals'] || datum.Silver_Medals || datum.silver_medals || '')",
+      "as": "SilverRaw"
+    },
+    {
+      "calculate": "(datum.Bronze || datum.bronze || datum['Bronze Medal'] || datum['Bronze Medals'] || datum.Bronze_Medals || datum.bronze_medals || '')",
+      "as": "BronzeRaw"
+    },
+
+
+    {"calculate": "toNumber(replace(replace(datum.TotalRaw, /,/g, ''), /\\s+/g, ''))", "as": "TotalNum"},
+    {"calculate": "toNumber(replace(replace(datum.GoldRaw, /,/g, ''), /\\s+/g, ''))", "as": "GoldNum"},
+    {"calculate": "toNumber(replace(replace(datum.SilverRaw, /,/g, ''), /\\s+/g, ''))", "as": "SilverNum"},
+    {"calculate": "toNumber(replace(replace(datum.BronzeRaw, /,/g, ''), /\\s+/g, ''))", "as": "BronzeNum"},
+
+
     {"filter": "datum.Country !== 'Unknown' && isFinite(datum.TotalNum) && datum.TotalNum > 0"},
     {"window": [{"op": "rank", "as": "r"}], "sort": [{"field": "TotalNum", "order": "descending"}]},
     {"filter": "datum.r <= 20"}
@@ -33,9 +51,9 @@
     "tooltip": [
       {"field": "Country", "title": "NOC/Country"},
       {"field": "TotalNum", "title": "Total", "type": "quantitative"},
-      {"field": "Gold", "type": "quantitative"},
-      {"field": "Silver", "type": "quantitative"},
-      {"field": "Bronze", "type": "quantitative"}
+      {"field": "GoldNum", "title": "Gold", "type": "quantitative"},
+      {"field": "SilverNum", "title": "Silver", "type": "quantitative"},
+      {"field": "BronzeNum", "title": "Bronze", "type": "quantitative"}
     ]
   }
 }
