@@ -1,0 +1,44 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {"text": "Top-20 Countries by Total Medals", "anchor": "start"},
+  "background": "transparent",
+  "width": 760,
+  "height": 540,
+  "data": {
+    "url": "data/medals_total.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "Gold": "number", "gold": "number",
+        "Silver": "number", "silver": "number",
+        "Bronze": "number", "bronze": "number",
+        "Total": "number", "total": "number", "TOTAL": "number"
+      }
+    }
+  },
+  "transform": [
+    {
+      "calculate": "(datum.NOC || datum.noc || datum['Team/NOC'] || datum.Team || datum.team || datum.Country || datum.country || 'Unknown')",
+      "as": "Country"
+    },
+    {
+      "calculate": "toNumber(datum.Total || datum.total || datum.TOTAL)",
+      "as": "TotalNum"
+    },
+    {"filter": "datum.Country !== 'Unknown' && isFinite(datum.TotalNum) && datum.TotalNum > 0"},
+    {"window": [{"op": "rank", "as": "r"}], "sort": [{"field": "TotalNum", "order": "descending"}]},
+    {"filter": "datum.r <= 20"}
+  ],
+  "mark": {"type": "bar", "cornerRadiusEnd": 3},
+  "encoding": {
+    "y": {"field": "Country", "type": "nominal", "sort": "-x", "title": null},
+    "x": {"field": "TotalNum", "type": "quantitative", "title": "Total Medals"},
+    "tooltip": [
+      {"field": "Country", "title": "NOC/Country"},
+      {"field": "TotalNum", "title": "Total", "type": "quantitative"},
+      {"field": "Gold", "type": "quantitative"},
+      {"field": "Silver", "type": "quantitative"},
+      {"field": "Bronze", "type": "quantitative"}
+    ]
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {"text": "Coaches vs Athletes by NOC (size = Total Medals)", "anchor": "start"},
+  "background": "transparent",
+  "width": 760,
+  "height": 520,
+  "data": {"url": "data/athletes.csv"},
+  "transform": [
+    {
+      "calculate": "datum.NOC ? datum.NOC : (datum['Team/NOC'] ? datum['Team/NOC'] : datum.Team)",
+      "as": "NOC"
+    },
+    {"aggregate": [{"op": "count", "as": "Athletes"}], "groupby": ["NOC"]},
+    {
+      "lookup": "NOC",
+      "from": {
+        "data": {"url": "coaches.csv"},
+        "key": "NOC",
+        "fields": ["NOC"]
+      },
+      "as": "coachlink"
+    },
+    {
+      "lookup": "NOC",
+      "from": {
+        "data": {"url": "coaches.csv"},
+        "key": "NOC",
+        "fields": ["NOC"]
+      }
+    },
+    {
+      "lookup": "NOC",
+      "from": {
+        "data": {"url": "coaches.csv"},
+        "key": "NOC",
+        "fields": []
+      }
+    },
+    {
+      "lookup": "NOC",
+      "from": {
+        "data": {"url": "coaches.csv"},
+        "key": "NOC",
+        "fields": ["NOC"]
+      },
+      "as": "dummy"
+    },
+    {
+      "lookup": "NOC",
+      "from": {
+        "data": {"url": "coaches.csv"},
+        "key": "NOC",
+        "fields": []
+      },
+      "as": "CoachRows"
+    },
+    {
+      "calculate": "isValid(datum.CoachRows) ? length(datum.CoachRows) : 0",
+      "as": "Coaches"
+    },
+    {
+      "lookup": "NOC",
+      "from": {
+        "data": {"url": "medals_total.csv"},
+        "key": "NOC",
+        "fields": ["Total", "Gold", "Silver", "Bronze", "Rank", "Rank by Total", "Team", "Team/NOC"]
+      }
+    },
+    {"calculate": "toNumber(datum.Total)", "as": "TotalMedals"},
+    {"calculate": "datum.NOC", "as": "Country"}
+  ],
+  "mark": {"type": "point", "filled": true, "size": 120},
+  "encoding": {
+    "x": {"field": "Athletes", "type": "quantitative", "title": "Number of Athletes"},
+    "y": {"field": "Coaches", "type": "quantitative", "title": "Number of Coaches"},
+    "size": {
+      "field": "TotalMedals",
+      "type": "quantitative",
+      "title": "Total Medals",
+      "legend": {"clipHeight": 30}
+    },
+    "tooltip": [
+      {"field": "Country", "title": "NOC"},
+      {"field": "Athletes", "type": "quantitative"},
+      {"field": "Coaches", "type": "quantitative"},
+      {"field": "TotalMedals", "type": "quantitative", "title": "Total Medals"},
+      {"field": "Gold", "type": "quantitative"},
+      {"field": "Silver", "type": "quantitative"},
+      {"field": "Bronze", "type": "quantitative"}
+    ]
+  }
+}

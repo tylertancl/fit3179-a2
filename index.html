@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FIT3179 Data Visualisation 2</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; }
+    .grid { display: grid; gap: 24px; grid-template-columns: 1fr; }
+    @media (min-width: 1000px) { .grid { grid-template-columns: 1fr; } } /* one column page per brief */
+    .chart { background: transparent; }
+    h1, h2 { margin: 0 0 8px; }
+    .byline, .meta { color:#555; font-size: 0.95rem; }
+  </style>
+  <!-- Vega, Vega-Lite, and Embed -->
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+</head>
+<body>
+  <h1>Olympic Snapshot (Demo)</h1>
+  <p class="byline">Author: Your Name • Date: 19 Oct 2025</p>
+  <p class="meta">Data sources: Your CSVs (see repository) • Built with Vega-Lite</p>
+
+  <div class="grid">
+    <section>
+      <h2>Top-20 Countries by Total Medals</h2>
+      <div id="chart1" class="chart"></div>
+    </section>
+
+    <section>
+      <h2>Athletes by Discipline and Gender (Share %)</h2>
+      <div id="chart2" class="chart"></div>
+    </section>
+
+    <section>
+      <h2>Coaches vs Athletes by NOC (size = Total Medals)</h2>
+      <div id="chart3" class="chart"></div>
+    </section>
+  </div>
+
+  <script>
+    vegaEmbed("#chart1", "charts/chart1_medals_top20.json", {actions:false});
+    vegaEmbed("#chart2", "charts/chart2_gender_by_discipline.json", {actions:false});
+    vegaEmbed("#chart3", "charts/chart3_coaches_vs_athletes.json", {actions:false});
+  </script>
+</body>
+</html>

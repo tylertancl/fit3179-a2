@@ -1,0 +1,51 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {"text": "Athletes by Discipline and Gender (Share %)", "anchor": "start"},
+  "background": "transparent",
+  "width": 760,
+  "height": 520,
+  "data": {"url": "data/athletes.csv"},
+  "transform": [
+    {
+      "calculate": "datum.Discipline ? datum.Discipline : (datum.Sport ? datum.Sport : 'Unknown')",
+      "as": "DisciplineClean"
+    },
+    {
+      "calculate": "datum.Gender ? datum.Gender : (datum.Sex ? datum.Sex : 'Unknown')",
+      "as": "GenderClean"
+    }
+  ],
+  "mark": {"type": "bar"},
+  "encoding": {
+    "y": {
+      "field": "DisciplineClean",
+      "type": "nominal",
+      "sort": "-x",
+      "title": "Discipline"
+    },
+    "x": {
+      "aggregate": "count",
+      "type": "quantitative",
+      "stack": "normalize",
+      "title": "Share of Athletes"
+    },
+    "color": {
+      "field": "GenderClean",
+      "type": "nominal",
+      "title": "Gender",
+      "scale": {"scheme": "tableau10"}
+    },
+    "tooltip": [
+      {"field": "DisciplineClean", "title": "Discipline"},
+      {"field": "GenderClean", "title": "Gender"},
+      {"aggregate": "count", "title": "Athletes"},
+      {
+        "aggregate": "count",
+        "title": "Share (%)",
+        "format": ".1%",
+        "stack": "normalize",
+        "type": "quantitative"
+      }
+    ]
+  }
+}
