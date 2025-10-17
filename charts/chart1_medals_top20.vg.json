@@ -5,7 +5,7 @@
   "width": 760,
   "height": 540,
   "data": {
-    "url": "https://tylertancl.github.io/fit3179-a2/data/medals_total.csv",
+    "url": "https://github.com/tylertancl/fit3179-a2.git/data/medals_total.csv",
     "format": {
       "type": "csv",
       "parse": {
