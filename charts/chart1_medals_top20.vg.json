@@ -5,7 +5,7 @@
   "width": 760,
   "height": 540,
   "data": {
-    "url": "https://github.com/tylertancl/fit3179-a2.git/data/medals_total.csv",
+    "url": "https://raw.githubusercontent.com/tylertancl/fit3179-a2/main/data/medals_total.csv",
     "format": {
       "type": "csv",
       "parse": {
@@ -21,10 +21,7 @@
       "calculate": "(datum.NOC || datum.noc || datum['Team/NOC'] || datum.Team || datum.team || datum.Country || datum.country || 'Unknown')",
       "as": "Country"
     },
-    {
-      "calculate": "toNumber(datum.Total || datum.total || datum.TOTAL)",
-      "as": "TotalNum"
-    },
+    {"calculate": "toNumber(datum.Total || datum.total || datum.TOTAL)", "as": "TotalNum"},
     {"filter": "datum.Country !== 'Unknown' && isFinite(datum.TotalNum) && datum.TotalNum > 0"},
     {"window": [{"op": "rank", "as": "r"}], "sort": [{"field": "TotalNum", "order": "descending"}]},
     {"filter": "datum.r <= 20"}

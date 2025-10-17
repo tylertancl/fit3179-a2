@@ -4,7 +4,7 @@
   "background": "transparent",
   "width": 760,
   "height": 520,
-  "data": {"url": "https://github.com/tylertancl/fit3179-a2.git/data/athletes.csv"},
+  "data": {"url": "https://raw.githubusercontent.com/tylertancl/fit3179-a2/main/data/athletes.csv"},
   "transform": [
     {
       "calculate": "datum.NOC ? datum.NOC : (datum['Team/NOC'] ? datum['Team/NOC'] : datum.Team)",
