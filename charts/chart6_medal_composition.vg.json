@@ -1,0 +1,53 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Medal Composition by Nation",
+    "anchor": "start"
+  },
+  "data": {
+    "url": "data/medals_total.csv"
+  },
+  "params": [
+    {
+      "name": "country_select",
+      "value": "United States of America",
+      "bind": {
+        "input": "select",
+        "options": [
+          "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Belarus", "Belgium", "Bermuda", "Botswana", "Brazil", "Bulgaria", "Burkina Faso", "Canada", "Chinese Taipei", "Colombia", "Croatia", "Cuba", "Czech Republic", "Côte d'Ivoire", "Denmark", "Dominican Republic", "Ecuador", "Egypt", "Estonia", "Ethiopia", "Fiji", "Finland", "France", "Georgia", "Germany", "Ghana", "Great Britain", "Greece", "Grenada", "Hong Kong, China", "Hungary", "India", "Indonesia", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kosovo", "Kuwait", "Kyrgyzstan", "Latvia", "Lithuania", "Malaysia", "Mexico", "Mongolia", "Morocco", "Namibia", "Netherlands", "New Zealand", "Nigeria", "North Macedonia", "Norway", "People's Republic of China", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "ROC", "Republic of Korea", "Republic of Moldova", "Romania", "San Marino", "Saudi Arabia", "Serbia", "Slovakia", "Slovenia", "South Africa", "Spain", "Sweden", "Switzerland", "Syrian Arab Republic", "Thailand", "Tunisia", "Turkey", "Turkmenistan", "Uganda", "Ukraine", "United States of America", "Uzbekistan", "Venezuela"
+        ],
+        "name": "Select Country: "
+      }
+    }
+  ],
+  "transform": [
+    {
+      "filter": "datum.Country == country_select"
+    },
+    {
+      "fold": ["Gold Medal", "Silver Medal", "Bronze Medal"],
+      "as": ["MedalType", "MedalCount"]
+    }
+  ],
+  "mark": {"type": "arc", "innerRadius": 70, "tooltip": true},
+  "encoding": {
+    "theta": {
+      "field": "MedalCount",
+      "type": "quantitative",
+      "stack": "normalize"
+    },
+    "color": {
+      "field": "MedalType",
+      "type": "nominal",
+      "scale": {
+        "domain": ["Gold Medal", "Silver Medal", "Bronze Medal"],
+        "range": ["#ffd700", "#c0c0c0", "#cd7f32"]
+      },
+      "title": "Medal Type"
+    },
+    "tooltip": [
+        {"field": "MedalType", "type": "nominal"},
+        {"field": "MedalCount", "type": "quantitative", "title": "Count"}
+    ]
+  }
+}

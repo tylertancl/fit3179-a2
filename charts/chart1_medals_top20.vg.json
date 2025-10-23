@@ -15,45 +15,46 @@
       "as": "Country"
     },
 
-
-    {
-      "calculate": "(datum.Total || datum.total || datum.TOTAL || datum['Total medals'] || datum['Total Medals'] || '')",
-      "as": "TotalRaw"
-    },
-    {
-      "calculate": "(datum.Gold || datum.gold || datum['Gold Medal'] || datum['Gold Medals'] || datum.Gold_Medals || datum.gold_medals || '')",
-      "as": "GoldRaw"
-    },
-    {
-      "calculate": "(datum.Silver || datum.silver || datum['Silver Medal'] || datum['Silver Medals'] || datum.Silver_Medals || datum.silver_medals || '')",
-      "as": "SilverRaw"
-    },
-    {
-      "calculate": "(datum.Bronze || datum.bronze || datum['Bronze Medal'] || datum['Bronze Medals'] || datum.Bronze_Medals || datum.bronze_medals || '')",
-      "as": "BronzeRaw"
-    },
-
+    {"calculate": "(datum.Total || datum.total || datum.TOTAL || datum['Total medals'] || datum['Total Medals'] || '')", "as": "TotalRaw"},
+    {"calculate": "(datum.Gold || datum.gold || datum['Gold Medal'] || datum['Gold Medals'] || datum.Gold_Medals || datum.gold_medals || '')", "as": "GoldRaw"},
+    {"calculate": "(datum.Silver || datum.silver || datum['Silver Medal'] || datum['Silver Medals'] || datum.Silver_Medals || datum.silver_medals || '')", "as": "SilverRaw"},
+    {"calculate": "(datum.Bronze || datum.bronze || datum['Bronze Medal'] || datum['Bronze Medals'] || datum.Bronze_Medals || datum.bronze_medals || '')", "as": "BronzeRaw"},
 
     {"calculate": "toNumber(replace(replace(datum.TotalRaw, /,/g, ''), /\\s+/g, ''))", "as": "TotalNum"},
     {"calculate": "toNumber(replace(replace(datum.GoldRaw, /,/g, ''), /\\s+/g, ''))", "as": "GoldNum"},
     {"calculate": "toNumber(replace(replace(datum.SilverRaw, /,/g, ''), /\\s+/g, ''))", "as": "SilverNum"},
     {"calculate": "toNumber(replace(replace(datum.BronzeRaw, /,/g, ''), /\\s+/g, ''))", "as": "BronzeNum"},
 
+  {"filter": "datum.Country !== 'Unknown' && isFinite(datum.TotalNum) && datum.TotalNum > 0"},
+  {"window": [{"op": "rank", "as": "r"}], "sort": [{"field": "TotalNum", "order": "descending"}]},
+  {"filter": "datum.r <= 20"},
 
-    {"filter": "datum.Country !== 'Unknown' && isFinite(datum.TotalNum) && datum.TotalNum > 0"},
-    {"window": [{"op": "rank", "as": "r"}], "sort": [{"field": "TotalNum", "order": "descending"}]},
-    {"filter": "datum.r <= 20"}
+  {"fold": ["BronzeNum", "SilverNum", "GoldNum"], "as": ["MedalType", "MedalCount"]},
+  {"calculate": "datum.MedalType == 'BronzeNum' ? 'Bronze' : (datum.MedalType == 'SilverNum' ? 'Silver' : 'Gold')", "as": "MedalLabel"},
+  {"calculate": "datum.MedalLabel == 'Bronze' ? 1 : (datum.MedalLabel == 'Silver' ? 2 : 3)", "as": "MedalOrder"}
   ],
-  "mark": {"type": "bar", "cornerRadiusEnd": 3},
-  "encoding": {
-    "y": {"field": "Country", "type": "nominal", "sort": "-x", "title": null},
-    "x": {"field": "TotalNum", "type": "quantitative", "title": "Total Medals"},
-    "tooltip": [
-      {"field": "Country", "title": "NOC/Country"},
-      {"field": "TotalNum", "title": "Total", "type": "quantitative"},
-      {"field": "GoldNum", "title": "Gold", "type": "quantitative"},
-      {"field": "SilverNum", "title": "Silver", "type": "quantitative"},
-      {"field": "BronzeNum", "title": "Bronze", "type": "quantitative"}
-    ]
-  }
+  "layer": [
+    {
+      "mark": {"type": "bar", "cornerRadiusEnd": 3},
+      "encoding": {
+  "y": {"field": "Country", "type": "nominal", "sort": "-x", "title": null},
+        "x": {"aggregate": "sum", "field": "MedalCount", "type": "quantitative", "title": "Medals"},
+        "color": {"field": "MedalLabel", "type": "nominal", "title": "Medal", "scale": {"domain": ["Bronze", "Silver", "Gold"], "range": ["#8c6d62", "#9ea7b0", "#c59d00"]}},
+  "order": {"field": "MedalOrder", "type": "quantitative", "sort": "ascending"},
+        "tooltip": [
+          {"field": "Country", "title": "NOC/Country"},
+          {"field": "MedalLabel", "title": "Medal Type"},
+          {"field": "MedalCount", "title": "Count", "type": "quantitative"}
+        ]
+      }
+    },
+    {
+      "mark": {"type": "text", "align": "left", "dx": 6, "dy": 0, "baseline": "middle"},
+      "encoding": {
+  "y": {"field": "Country", "type": "nominal", "sort": "-x"},
+        "x": {"aggregate": "sum", "field": "MedalCount", "type": "quantitative"},
+        "text": {"aggregate": "sum", "field": "MedalCount", "type": "quantitative"}
+      }
+    }
+  ]
 }

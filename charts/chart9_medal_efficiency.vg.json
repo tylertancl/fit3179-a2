@@ -1,0 +1,38 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {"text": "Medal Efficiency — Medals per Athlete", "anchor": "start"},
+  "width": 760,
+  "height": 560,
+  "data": {"url": "data/medals_total.csv", "format": {"type": "csv"}},
+  "transform": [
+    {"calculate": "toNumber(datum.Total)", "as": "TotalMedals"},
+    {"calculate": "datum['Country Code'] || datum['Country_Code'] || datum.NOC || datum['NOC'] || datum['Country code']", "as": "CountryCode"},
+    {
+      "lookup": "CountryCode",
+      "from": {
+        "data": {"url": "data/athlete_counts.csv", "format": {"type": "csv"}},
+        "key": "country_code",
+        "fields": ["AthleteCount"]
+      }
+    },
+    {"filter": "datum.AthleteCount != null"},
+    {"calculate": "toNumber(datum.AthleteCount)", "as": "AthleteCount"}
+    ,
+    {"filter": "datum.AthleteCount > 0"},
+    {"calculate": "datum.TotalMedals / datum.AthleteCount", "as": "Efficiency"}
+  ],
+  "mark": {"type": "point", "filled": true},
+  "encoding": {
+    "x": {"field": "AthleteCount", "type": "quantitative", "title": "Number of Athletes", "scale": {"zero": false}},
+    "y": {"field": "TotalMedals", "type": "quantitative", "title": "Total Medals", "scale": {"zero": true}},
+    "size": {"field": "TotalMedals", "type": "quantitative", "title": "Medals (size)", "scale": {"range": [30, 120]}},
+    "color": {"field": "Efficiency", "type": "quantitative", "title": "Medals per Athlete", "scale": {"scheme": "blues"}},
+    "tooltip": [
+      {"field": "Country", "type": "nominal", "title": "Country"},
+      {"field": "CountryCode", "type": "nominal", "title": "Country Code"},
+      {"field": "AthleteCount", "type": "quantitative", "title": "Athletes"},
+      {"field": "TotalMedals", "type": "quantitative", "title": "Medals"},
+      {"field": "Efficiency", "type": "quantitative", "title": "Medals per Athlete", "format": ".4f"}
+    ]
+  }
+}

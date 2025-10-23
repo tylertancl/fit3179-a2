@@ -1,0 +1,71 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Geographic Medal Density",
+  "width": 900,
+  "height": 520,
+  "projection": {"type": "equalEarth"},
+  "layer": [
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/world-110m.json",
+        "format": {"type": "topojson", "feature": "countries"}
+      },
+      "mark": {"type": "geoshape", "fill": "#eeeeee", "stroke": "#ffffff", "strokeWidth": 0.5}
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/world-110m.json",
+        "format": {"type": "topojson", "feature": "countries"}
+      },
+      "transform": [
+        {
+          "lookup": "id",
+          "from": {
+            "data": {
+              "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/world-110m-country-names.tsv",
+              "format": {"type": "tsv"}
+            },
+            "key": "id",
+            "fields": ["name"]
+          }
+        },
+        {
+          "calculate": "replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(datum.name, 'United Kingdom','Great Britain'),'South Korea','Republic of Korea'),'Russia','ROC'),'Czechia','Czech Republic'),'Iran','Islamic Republic of Iran'),'Kyrgyzstan','Kyrgyz Republic'),'Moldova','Republic of Moldova'),'Syria','Syrian Arab Republic'),'North Macedonia','Republic of North Macedonia'), 'Swaziland','Eswatini')",
+          "as": "NameForJoin"
+        },
+        {
+          "lookup": "NameForJoin",
+          "from": {
+            "data": {
+              "url": "https://raw.githubusercontent.com/tylertancl/fit3179-a2/main/data/medals_total.csv"
+            },
+            "key": "Country",
+            "fields": ["Total", "Gold Medal", "Silver Medal", "Bronze Medal"]
+          }
+        },
+        {"calculate": "toNumber(datum.Total)", "as": "TotalNum"}
+      ],
+      "mark": {"type": "geoshape", "stroke": "#ffffff", "strokeWidth": 0.5},
+      "encoding": {
+        "color": {
+          "field": "TotalNum",
+          "type": "quantitative",
+          "scale": {
+            "type": "threshold",
+            "domain": [1, 10, 30, 50, 70],
+            "range": ["#f7fbff", "#deebf7", "#c6dbef", "#9ecae1", "#6baed6", "#2171b5"]
+          },
+          "legend": {"title": "Total Medals", "format": ".0f"}
+        },
+        "tooltip": [
+          {"field": "name", "title": "Map Name"},
+          {"field": "NameForJoin", "title": "Joined to CSV"},
+          {"field": "Gold Medal", "title": "Gold", "type": "quantitative"},
+          {"field": "Silver Medal", "title": "Silver", "type": "quantitative"},
+          {"field": "Bronze Medal", "title": "Bronze", "type": "quantitative"},
+          {"field": "TotalNum", "title": "Total", "type": "quantitative"}
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {"text": "Athlete Age Distribution by Sport", "anchor": "start"},
+  "width": 1000,
+  "height": 520,
+  "data": {"url": "data/athletes.csv", "format": {"type": "csv"}},
+  "params": [
+    {"name": "sport_select", "value": "All", "bind": {"input": "select", "options": ["All", "3x3 Basketball", "Archery", "Artistic Gymnastics", "Artistic Swimming", "Athletics", "Badminton", "Baseball/Softball", "Basketball", "Beach Volleyball", "Boxing", "Canoe Slalom", "Canoe Sprint", "Cycling BMX Freestyle", "Cycling BMX Racing", "Cycling Mountain Bike", "Cycling Road", "Cycling Track", "Diving", "Equestrian", "Fencing", "Football", "Golf", "Handball", "Hockey", "Judo", "Karate", "Marathon Swimming", "Modern Pentathlon", "Rhythmic Gymnastics", "Rowing", "Rugby Sevens", "Sailing", "Shooting", "Skateboarding", "Sport Climbing", "Surfing", "Swimming", "Table Tennis", "Taekwondo", "Tennis", "Trampoline Gymnastics", "Triathlon", "Volleyball", "Water Polo", "Weightlifting", "Wrestling"], "name": "Sport:"}},
+    {"name": "gender_select", "value": "All", "bind": {"input": "select", "options": ["All", "Female", "Male"], "name": "Gender:"}}
+  ],
+  "transform": [
+    {"calculate": "(datum.Discipline || datum.discipline || datum['Discipline Name'] || datum.Sport || datum.sport || datum.Event || 'Unknown')", "as": "Sport"},
+    {"calculate": "(datum.Gender || datum.gender || datum.Sex || datum.sex || 'Unknown')", "as": "Gender"},
+    {"calculate": "substring(datum.birth_date,0,4)", "as": "birth_year_str"},
+    {"calculate": "substring(datum.birth_date,5,2)", "as": "birth_month_str"},
+    {"calculate": "substring(datum.birth_date,8,2)", "as": "birth_day_str"},
+    {"calculate": "toNumber(datum.birth_year_str)", "as": "birth_year"},
+    {"calculate": "toNumber(datum.birth_month_str)", "as": "birth_month"},
+    {"calculate": "toNumber(datum.birth_day_str)", "as": "birth_day"},
+    {"calculate": "(2021 - datum.birth_year) - ((datum.birth_month * 100 + datum.birth_day) > 723 ? 1 : 0)", "as": "AgeNum"},
+    {"joinaggregate": [{"op": "count", "as": "SportCount"}], "groupby": ["Sport"]},
+    {"window": [{"op": "rank", "as": "sport_rank"}], "sort": [{"field": "SportCount", "order": "descending"}]},
+    {"filter": "datum.Sport != 'Unknown' && datum.Gender != 'Unknown' && isFinite(datum.AgeNum) && datum.AgeNum >= 0 && datum.AgeNum <= 70 && (sport_select == 'All' || datum.Sport == sport_select) && (gender_select == 'All' || datum.Gender == gender_select)"}
+  ],
+  "layer": [
+    {
+      "mark": {"type": "boxplot", "extent": 1.5},
+      "encoding": {
+        "x": {"field": "Sport", "type": "nominal", "title": "Sport", "axis": {"labelAngle": -40, "labelLimit": 160}},
+        "y": {"field": "AgeNum", "type": "quantitative", "title": "Age"},
+        "color": {"field": "Gender", "type": "nominal", "title": "Gender"},
+        "tooltip": [
+          {"field": "Sport", "type": "nominal"},
+          {"field": "Gender", "type": "nominal"}
+        ]
+      }
+    }
+  ]
+}
+

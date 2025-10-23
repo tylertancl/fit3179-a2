@@ -1,6 +1,9 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {"text": "Athletes by Discipline and Gender (Share %)", "anchor": "start"},
+  "title": {
+    "text": "Gender Representation Across Olympic Disciplines",
+    "anchor": "start"
+  },
   "background": "transparent",
   "width": 760,
   "height": 520,
@@ -8,6 +11,12 @@
     "url": "https://raw.githubusercontent.com/tylertancl/fit3179-a2/main/data/athletes.csv",
     "format": {"type": "csv"}
   },
+  "params": [
+    {
+      "name": "discipline_select",
+      "bind": {"input": "select", "options": [null, "Archery", "Artistic Gymnastics", "Athletics", "Badminton", "Baseball", "Basketball", "Beach Volleyball", "Boxing", "Canoe Slalom", "Canoe Sprint", "Cycling BMX Freestyle", "Cycling BMX Racing", "Cycling Mountain Bike", "Cycling Road", "Cycling Track", "Diving", "Equestrian", "Fencing", "Football", "Golf", "Handball", "Hockey", "Judo", "Karate", "Marathon Swimming", "Modern Pentathlon", "Rhythmic Gymnastics", "Rowing", "Rugby Sevens", "Sailing", "Shooting", "Skateboarding", "Softball", "Sport Climbing", "Surfing", "Swimming", "Table Tennis", "Taekwondo", "Tennis", "Trampoline Gymnastics", "Triathlon", "Volleyball", "Water Polo", "Weightlifting", "Wrestling"], "name": "Select Discipline: "}
+    }
+  ],
   "transform": [
     {
       "calculate": "(datum.Discipline || datum.discipline || datum['Discipline Name'] || datum.discipline_name || datum.Sport || datum.sport || datum.Event || datum.event || 'Unknown')",
@@ -17,13 +26,18 @@
       "calculate": "(datum.Gender || datum.gender || datum.Sex || datum.sex || null)",
       "as": "GenderClean"
     },
-    {"calculate": "datum.GenderClean == null ? 'Unknown' : datum.GenderClean", "as": "GenderClean"}
+    {"calculate": "datum.GenderClean == null ? 'Unknown' : datum.GenderClean", "as": "GenderClean"},
+    {"filter": "discipline_select == null || datum.DisciplineClean == discipline_select"}
   ],
   "mark": "bar",
   "encoding": {
     "y": {"field": "DisciplineClean", "type": "nominal", "sort": "-x", "title": "Discipline"},
     "x": {"aggregate": "count", "type": "quantitative", "stack": "normalize", "title": "Share of Athletes"},
     "color": {"field": "GenderClean", "type": "nominal", "title": "Gender"},
-    "tooltip": {"content": "data"}
+    "tooltip": [
+      {"field": "DisciplineClean", "type": "nominal"},
+      {"field": "GenderClean", "type": "nominal"},
+      {"aggregate": "count", "type": "quantitative", "title": "Count"}
+    ]
   }
 }

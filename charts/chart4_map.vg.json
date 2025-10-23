@@ -1,55 +1,56 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "Total medals by country (simple map)",
+  "title": "Total Olympic Medals by Country",
   "width": 800,
-  "height": 450,
-  "background": "#ffffff",
-  "projection": {"type": "equirectangular"},
-
+  "height": 500,
+  "projection": {"type": "equalEarth"},
   "layer": [
     {
       "data": {
-        "url": "https://cdn.jsdelivr.net/npm/vega-datasets@2.3.0/data/world-110m.json",
+        "url": "https://vega.github.io/vega-lite/data/world-110m.json",
         "format": {"type": "topojson", "feature": "countries"}
       },
-      "mark": {"type": "geoshape", "fill": "#e3e4e8", "stroke": "#5c5c5c", "strokeWidth": 0.5}
+      "mark": {"type": "geoshape", "fill": "#eee", "stroke": "#ccc"}
     },
-
     {
+      
       "data": {
-        "url": "https://raw.githubusercontent.com/Tegosaurus1611/FIT3179-Data-Visualisation-2/main/Data/country_medals.csv"
+        "url": "https://vega.github.io/vega-lite/data/world-110m.json",
+        "format": {"type": "topojson", "feature": "countries"}
       },
       "transform": [
-        {"calculate": "toNumber(datum.Gold)", "as": "GoldNum"},
-        {"calculate": "toNumber(datum.Silver)", "as": "SilverNum"},
-        {"calculate": "toNumber(datum.Bronze)", "as": "BronzeNum"},
-        {"calculate": "datum.GoldNum + datum.SilverNum + datum.BronzeNum", "as": "TotalMedals"},
         {
-          "lookup": "Country",
+          "calculate": "datum.properties && datum.properties.name ? datum.properties.name : datum.name",
+          "as": "name_raw"
+        },
+        {"calculate": "replace(datum.name_raw, 'United States', 'United States of America')", "as": "name_norm"},
+        {"calculate": "replace(datum.name_norm, 'Russia', 'ROC')", "as": "name_norm"},
+        {"calculate": "replace(datum.name_norm, 'Taiwan', 'Chinese Taipei')", "as": "name_norm"},
+        {"calculate": "replace(datum.name_norm, 'Iran', 'Islamic Republic of Iran')", "as": "name_norm"},
+        {"calculate": "replace(datum.name_norm, 'South Korea', 'Republic of Korea')", "as": "name_norm"},
+        {
+          "lookup": "name_norm",
           "from": {
-            "data": {
-              "url": "https://cdn.jsdelivr.net/gh/gavinr/world-countries-centroids@v1/dist/countries.csv"
-            },
-            "key": "COUNTRY",
-            "fields": ["latitude", "longitude"]
+            "data": {"url": "data/medals_total.csv", "format": {"type": "csv"}},
+            "key": "Country",
+            "fields": ["Gold Medal", "Silver Medal", "Bronze Medal", "Total"]
           }
         },
-        {"filter": "isValid(datum.latitude) && isValid(datum.longitude) && isFinite(datum.TotalMedals) && datum.TotalMedals > 0"}
+        {"calculate": "toNumber(datum['Gold Medal'])", "as": "GoldNum"},
+        {"calculate": "toNumber(datum['Silver Medal'])", "as": "SilverNum"},
+        {"calculate": "toNumber(datum['Bronze Medal'])", "as": "BronzeNum"},
+        {"calculate": "isValid(datum.Total) ? toNumber(datum.Total) : (datum.GoldNum + datum.SilverNum + datum.BronzeNum)", "as": "TotalMedalsNum"},
+        {"filter": "isFinite(datum.TotalMedalsNum)"}
       ],
-      "mark": {"type": "circle", "opacity": 0.9, "stroke": "white", "strokeWidth": 0.5},
+      "mark": {"type": "geoshape", "stroke": "white", "strokeWidth": 0.5},
       "encoding": {
-        "longitude": {"field": "longitude", "type": "quantitative"},
-        "latitude": {"field": "latitude", "type": "quantitative"},
-        "size": {
-          "field": "TotalMedals",
-          "type": "quantitative",
-          "title": "Total medals",
-          "scale": {"range": [0, 1800]}
-        },
-        "color": {"value": "#1f77b4"},
+        "color": {"field": "TotalMedalsNum", "type": "quantitative", "scale": {"scheme": "blues"}, "title": "Total medals"},
         "tooltip": [
-          {"field": "Country", "title": "Country"},
-          {"field": "TotalMedals", "title": "Total medals"}
+          {"field": "name_norm", "title": "Country"},
+          {"field": "TotalMedalsNum", "title": "Total medals"},
+          {"field": "GoldNum", "title": "Gold"},
+          {"field": "SilverNum", "title": "Silver"},
+          {"field": "BronzeNum", "title": "Bronze"}
         ]
       }
     }
