@@ -87,7 +87,10 @@
             "format": ".2f",
             "orient": "right",
             "direction": "vertical",
-            "offset": 10
+            "offset": 10,
+            "titleFontSize": 15,
+            "labelFontSize": 16,
+            "symbolSize": 240
           }
         },
         "tooltip": [
@@ -109,9 +112,10 @@
 
   "config": {
     "legend": {
-      "labelFontSize": 12,
-      "titleFontSize": 13,
-      "gradientLength": 120
+      "labelFontSize": 16,
+      "titleFontSize": 18,
+      "gradientLength": 160,
+      "symbolSize": 240
     }
   }
 }

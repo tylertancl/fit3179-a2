@@ -23,6 +23,31 @@ body {
   background: transparent;
 }
 
+.hero-title {
+  position: relative;
+  font-family: "Georgia", "Playfair Display", serif;
+  font-size: 7rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 40px auto;
+  padding: 60px 0; /* adds spacing so background is visible */
+  color: black; /* white text for contrast */
+  z-index: 1;
+}
+
+.hero-title::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url("images/tokyo_2020.jpg"); /* update path if needed */
+  background-size: cover;
+  background-position: center;
+  opacity: 0.1; /* transparency level — adjust (0.1 = more transparent, 0.5 = less) */
+  z-index: -1;
+  border-radius: 8px; /* optional softer edges */
+  filter: blur(1px); /* optional subtle blur */
+}
+
 /* Ensure Vega’s internal wrapper also stretches to the container width */
 .vega-embed, .vega-embed > div {
   width: 100% !important;
@@ -48,7 +73,7 @@ h1 {
 }
 
 .intro {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto 40px auto;
   font-size: 1.1rem;
   line-height: 1.6;
@@ -59,7 +84,7 @@ h1 {
 
 h2 {
   font-family: "Playfair Display", Georgia, serif;
-  font-size: 1.8rem;
+  font-size: 3rem;
   font-weight: 700;                                 /* bold weight */
   text-align: center;
   margin: 24px 0 12px;
@@ -111,3 +136,53 @@ h2 {
 #chart1 .vega-bindings * {
   display: none !important;
 }
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;  /* a bit more room for the donut */
+  gap: 32px;
+  align-items: start;                  /* ← top-align both columns */
+  margin-top: 16px;
+}
+
+.viz {
+  display: flex;
+  justify-content: center; /* horizontally center the donut */
+  align-items: center;
+  text-align: center;
+}
+
+
+@media (max-width: 900px) {
+  .two-col { grid-template-columns: 1fr; }  /* stack on small screens */
+}
+
+.viz .chart {
+  margin: 0 auto; 
+  max-width: 450px; /* keeps donut size consistent */
+}
+
+
+.side-text {
+  text-align: left;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+/* optional: hide heading for accessibility only */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+.chart-description {
+  max-width: 850px;
+  margin: 14px auto 0 auto;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  text-align: center;
+  color: #333;
+}
+

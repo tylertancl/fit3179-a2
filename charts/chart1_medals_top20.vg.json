@@ -43,7 +43,13 @@
           "field": "MedalLabel",
           "type": "nominal",
           "title": "Medal",
-          "scale": {"domain": ["Bronze", "Silver", "Gold"], "range": ["#C9961A", "#9BA1A8", "#FDCE1E"]}
+          "scale": {"domain": ["Bronze", "Silver", "Gold"], "range": ["#C9961A", "#9BA1A8", "#FDCE1E"]},
+          "legend": {
+            "titleFontSize": 16,
+            "labelFontSize": 14,
+            "symbolSize": 180,
+            "orient": "right"
+          }
         },
         "order": {"field": "MedalOrder", "type": "quantitative", "sort": "ascending"},
         "tooltip": [
@@ -60,6 +66,47 @@
         "x": {"aggregate": "sum", "field": "MedalCount", "type": "quantitative"},
         "text": {"aggregate": "sum", "field": "MedalCount", "type": "quantitative"}
       }
+    },
+    {
+  "transform": [
+    { "aggregate": [{ "op": "max", "field": "MedalCount", "as": "xmax" }] }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "rect",
+            "fill": "white",
+            "stroke": "#333",
+            "strokeWidth": 1,
+            "cornerRadius": 6,
+            "opacity": 0.9
+          },
+          "encoding": {
+            "x": { "value": 840 },
+            "x2": { "value": 590 },
+            "y": { "value": 270 },
+            "y2": { "value": 360 }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "font": "Georgia",
+            "fontSize": 14,
+            "align": "left",
+            "baseline": "top",
+            "lineBreak": "\n",
+            "lineHeight": 18
+          },
+          "encoding": {
+            "x": { "value": 595},
+            "y": { "value": 275 },
+            "text": {
+              "value": "Key Insight:\nUSA, China, and Russia lead the\ntotal medal table. Use the medal\nbuttons to view each layer separately."
+            }
+          }
+        }
+      ]
     }
   ]
 }

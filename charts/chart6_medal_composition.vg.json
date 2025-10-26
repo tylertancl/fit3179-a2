@@ -1,51 +1,93 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "width": "container",
-  "height": 450,
+  "height": 420,
   "data": {
     "url": "https://raw.githubusercontent.com/tylertancl/fit3179-a2/refs/heads/main/data/medals_total.csv"
   },
+
   "params": [
     {
       "name": "country_select",
       "value": "Argentina",
       "bind": {
         "input": "select",
+        "name": "Select Country: ",
         "options": [
-          "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Belarus", "Belgium", "Bermuda", "Botswana", "Brazil", "Bulgaria", "Burkina Faso", "Canada", "Chinese Taipei", "Colombia", "Croatia", "Cuba", "Czech Republic", "Côte d'Ivoire", "Denmark", "Dominican Republic", "Ecuador", "Egypt", "Estonia", "Ethiopia", "Fiji", "Finland", "France", "Georgia", "Germany", "Ghana", "Great Britain", "Greece", "Grenada", "Hong Kong, China", "Hungary", "India", "Indonesia", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kosovo", "Kuwait", "Kyrgyzstan", "Latvia", "Lithuania", "Malaysia", "Mexico", "Mongolia", "Morocco", "Namibia", "Netherlands", "New Zealand", "Nigeria", "North Macedonia", "Norway", "People's Republic of China", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "ROC", "Republic of Korea", "Republic of Moldova", "Romania", "San Marino", "Saudi Arabia", "Serbia", "Slovakia", "Slovenia", "South Africa", "Spain", "Sweden", "Switzerland", "Syrian Arab Republic", "Thailand", "Tunisia", "Turkey", "Turkmenistan", "Uganda", "Ukraine", "United States of America", "Uzbekistan", "Venezuela"
-        ],
-        "name": "Select Country: "
+          "Argentina", "Australia", "Brazil", "Canada", "China", "France",
+          "Germany", "Great Britain", "India", "Italy", "Japan", "Korea",
+          "Netherlands", "New Zealand", "Norway", "Poland", "Russia",
+          "Spain", "Sweden", "Switzerland", "Taiwan", "Turkey", "Ukraine",
+          "United States of America", "Uzbekistan"
+        ]
       }
     }
   ],
+
   "transform": [
+    { "filter": "datum.Country == country_select" },
+    { "fold": ["Gold Medal", "Silver Medal", "Bronze Medal"], "as": ["MedalType", "MedalCount"] }
+  ],
+
+  "layer": [
     {
-      "filter": "datum.Country == country_select"
+      "mark": { "type": "arc", "innerRadius": 170, "cornerRadius": 2, "tooltip": true },
+      "encoding": {
+        "theta": { "field": "MedalCount", "type": "quantitative", "stack": "normalize" },
+        "color": {
+          "field": "MedalType",
+          "type": "nominal",
+          "scale": {
+            "domain": ["Gold Medal", "Silver Medal", "Bronze Medal"],
+            "range": ["#FDCE1E", "#9BA1A8", "#C9961A"]
+          },
+          "title": "Medal Type"
+        },
+        "tooltip": [
+          { "field": "MedalType", "type": "nominal" },
+          { "field": "MedalCount", "type": "quantitative", "title": "Count" }
+        ]
+      }
     },
+
     {
-      "fold": ["Gold Medal", "Silver Medal", "Bronze Medal"],
-      "as": ["MedalType", "MedalCount"]
+      "transform": [
+        { "aggregate": [{"op": "sum", "field": "MedalCount", "as": "sum"}], "groupby": ["MedalType"] },
+        { "pivot": "MedalType", "value": "sum" },
+        {
+        "calculate": "'Gold: ' + format(toNumber(datum['Gold Medal']), ',') + '\\nSilver: ' + format(toNumber(datum['Silver Medal']), ',') + '\\nBronze: ' + format(toNumber(datum['Bronze Medal']), ',')",
+        "as": "centerText"
+      }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "center",
+        "baseline": "middle",
+        "font": "Calibri",
+        "fontSize": 20,
+        "lineBreak": "\n",
+        "lineHeight": 36
+      },
+      "encoding": {
+        "x": { "expr": "width/2" },
+        "y": { "expr": "height/2" },
+        "text": { "field": "centerText" }
+      }
     }
   ],
-  "mark": {"type": "arc", "innerRadius": 70, "tooltip": true},
-  "encoding": {
-    "theta": {
-      "field": "MedalCount",
-      "type": "quantitative",
-      "stack": "normalize"
-    },
-    "color": {
-      "field": "MedalType",
-      "type": "nominal",
-      "scale": {
-        "domain": ["Gold Medal", "Silver Medal", "Bronze Medal"],
-        "range": ["#ffd700", "#c0c0c0", "#cd7f32"]
-      },
-      "title": "Medal Type"
-    },
-    "tooltip": [
-        {"field": "MedalType", "type": "nominal"},
-        {"field": "MedalCount", "type": "quantitative", "title": "Count"}
-    ]
+
+  "config": {
+    "view": { "stroke": null },
+    "axis": { "grid": false },
+    "legend": {
+      "orient": "top",
+      "anchor": "middle",
+      "direction": "horizontal",
+      "symbolSize": 200,
+      "symbolType": "circle",
+      "titleFontSize": 14,
+      "labelFontSize": 12,
+      "offset": 10
+    }
   }
 }

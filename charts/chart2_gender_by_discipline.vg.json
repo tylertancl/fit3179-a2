@@ -58,6 +58,8 @@
     "domain": ["Male", "Female"],
     "range": ["#4C78A8", "#E15759"]
   }
+  ,
+  "legend": {"titleFontSize": 14, "labelFontSize": 12, "symbolSize": 160}
 },
     "tooltip": [
       {"field": "Discipline", "type": "nominal"},

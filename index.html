@@ -16,10 +16,10 @@
 </head>
 
 <body>
-  <h1>Tokyo Olympics 2020</h1>
+  <h1 class="hero-title">Tokyo Olympics 2020</h1>
 
   <p class="intro">
-    The Tokyo 2020 Olympic Games, held in 2021 due to the global COVID-19 pandemic, marked a historic moment as the first Olympics to take place during such unprecedented circumstances. Despite the restrictions and absence of crowds, the Games brought together thousands of athletes from around the world to compete across a wide range of disciplines. This data visualisation explores key insights from the event — including medal distribution, athlete demographics
+    The Tokyo 2020 Olympic Games, held in 2021 due to the global COVID-19 pandemic, marked a historic moment as the first Olympics to take place during such unprecedented circumstances. Despite the restrictions and absence of crowds, the Games brought together thousands of athletes from around the world to compete across a wide range of disciplines. This data visualisation explores key insights from the event — including medal distribution and athlete demographics.
   </p>
 
 
@@ -44,25 +44,73 @@
     </section>
 
     <section>
-      <h2>Medal Composition by Nation</h2>
-      <div id="chart6" class="chart"></div>
+      <h2 class="section-title">Medal Composition by Nation</h2>
+
+      <div class="two-col">
+        <div class="viz">
+          <div id="chart6" class="chart"></div>
+        </div>
+
+        <aside class="side-text">
+          <p>
+            Each country's Olympic performance tells a different story. Some nations secure many podium finishes but fewer gold medals, while others achieve fewer medals overall but a high proportion of gold. This visual highlights those differences by showing the medal mix for the selected country. 
+            Try comparing countries like Japan, USA, and Italy to explore distinct performance patterns.
+          </p>
+
+          <p>
+            In addition, the balance between medal types can reflect the depth of a country's athletic competitiveness. 
+            A nation with a high share of bronze medals may have many athletes reaching the final stages of competition, while a gold-heavy distribution suggests dominance in key events. By examining how these proportions shift from one country to another, we gain insight into not only the scale of participation, 
+            but also the level of performance and specialization across sporting disciplines.
+            </p>
+        </aside>
+      </div>
     </section>
 
     <section>
       <h2>Athletes by Discipline and Gender (Share %)</h2>
+
+      <p class="chart-description">
+        This chart shows the gender distribution of athletes across Olympic disciplines. 
+        Each bar is split to indicate the share of male and female participants in that sport. 
+        Some events, such as rhythmic gymnastics, are dominated by one gender, while others, 
+        like swimming and athletics, show a relatively balanced participation.
+      </p>
+
       <div id="chart2" class="chart"></div>
+
+
     </section>
 
   
     <section>
       <h2>Athlete Age Distribution by Sport</h2>
+
+      <p class="chart-description">
+        This chart compares athlete ages across Olympic sports using box plots, split by gender. 
+        The box shows the middle 50% of ages with the line marking the median, while dots indicate outliers. 
+        Some sports skew older (e.g., equestrian, shooting, sailing), whereas others tend to be younger 
+        (e.g., skateboarding, gymnastics, swimming).
+      </p>
+
       <div id="chart8" class="chart"></div>
+
     </section>
 
     <section>
       <h2>Medal Efficiency — Medals per Athlete</h2>
+      
+      <p class="chart-description">
+        This scatter plot shows how efficiently each country converted athlete participation into medal wins.
+        The x-axis shows the number of athletes, while the y-axis indicates total medals earned. Bubble size
+        represents medal count, and color intensity reflects medals per athlete. Countries positioned higher and 
+        further left achieved strong medal results relative to smaller team sizes — for example, Russia stands out 
+        with a particularly high medals-to-athlete ratio.
+      </p>
+      
       <div id="chart9" class="chart"></div>
+
     </section>
+
 
   </div>
 

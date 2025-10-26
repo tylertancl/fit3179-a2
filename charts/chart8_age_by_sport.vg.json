@@ -28,13 +28,18 @@
         "x": {"field": "Sport", "type": "nominal", "title": "Sport", "axis": {"labelAngle": -40, "labelLimit": 160}},
         "xOffset": {"field": "Gender"},
         "y": {"field": "AgeNum", "type": "quantitative", "title": "Age"},
-        "color": {"field": "Gender", "type": "nominal", "title": "Gender", "scale": {"domain": ["Male", "Female"], "range": ["#1f77b4", "#ff7f0e"]}},
+  "color": {"field": "Gender", "type": "nominal", "title": "Gender", "scale": {"domain": ["Male", "Female"], "range": ["#1f77b4", "#ff7f0e"]}, "legend": {"titleFontSize": 14, "labelFontSize": 12, "symbolSize": 160}},
         "tooltip": [
           {"field": "Sport", "type": "nominal"},
           {"field": "Gender", "type": "nominal"}
         ]
       }
     }
-  ]
-}
+  ],
 
+  "config": {
+    "axis": {
+      "grid": false
+    }
+  }
+}
