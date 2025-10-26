@@ -27,8 +27,9 @@
       "mark": {"type": "boxplot", "extent": 1.5},
       "encoding": {
         "x": {"field": "Sport", "type": "nominal", "title": "Sport", "axis": {"labelAngle": -40, "labelLimit": 160}},
+        "xOffset": {"field": "Gender"},
         "y": {"field": "AgeNum", "type": "quantitative", "title": "Age"},
-        "color": {"field": "Gender", "type": "nominal", "title": "Gender"},
+        "color": {"field": "Gender", "type": "nominal", "title": "Gender", "scale": {"domain": ["Male", "Female"], "range": ["#1f77b4", "#ff7f0e"]}},
         "tooltip": [
           {"field": "Sport", "type": "nominal"},
           {"field": "Gender", "type": "nominal"}
