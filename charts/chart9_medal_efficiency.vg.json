@@ -1,7 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {"text": "Medal Efficiency — Medals per Athlete", "anchor": "start"},
-  "width": 760,
+  "width": "container",
   "height": 560,
   "data": {"url": "data/medals_total.csv", "format": {"type": "csv"}},
   "transform": [

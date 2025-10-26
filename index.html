@@ -4,42 +4,43 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>FIT3179 Data Visualisation 2</title>
-  <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; }
-    .grid { display: grid; gap: 24px; grid-template-columns: 1fr; }
-    @media (min-width: 1000px) { .grid { grid-template-columns: 1fr; } } /* one column page per brief */
-    .chart { background: transparent; }
-    h1, h2 { margin: 0 0 8px; }
-    .byline, .meta { color:#555; font-size: 0.95rem; }
-  </style>
+
   <!-- Vega, Vega-Lite, and Embed -->
-  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>        <!-- ✅ required -->
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
 </head>
+
 <body>
   <h1>Tokyo Olympics 2020</h1>
 
+  <p class="intro">
+    The Tokyo 2020 Olympic Games, held in 2021 due to the global COVID-19 pandemic, marked a historic moment as the first Olympics to take place during such unprecedented circumstances. Despite the restrictions and absence of crowds, the Games brought together thousands of athletes from around the world to compete across a wide range of disciplines. This data visualisation explores key insights from the event — including medal distribution, athlete demographics
+  </p>
+
 
   <div class="grid">
-    <section>
-      <h2>Top-20 Countries by Total Medals</h2>
-      <div id="chart1" class="chart"></div>
-    </section>
-
-    <section>
-      <h2>Athletes by Discipline and Gender (Share %)</h2>
-      <div id="chart2" class="chart"></div>
-    </section>
-
     <section>
       <h2>World Medal Distribution</h2>
       <div id="chart3" class="chart"></div>
     </section>
 
     <section>
-      <h2>Sports That Awarded the Most Medals</h2>
-      <div id="chart5" class="chart"></div>
+      <h2>Top-20 Countries by Total Medals</h2>
+      <div id="chart1" class="chart"></div>
+    </section>
+
+    <section>
+      <div class="medal-controls" id="medal-controls">
+        <button class="medal-btn active" data-med="All"    title="All"><img src="images/all.jpg"    alt="All"></button>
+        <button class="medal-btn"        data-med="Gold"   title="Gold"><img src="images/gold.jpg"   alt="Gold"></button>
+        <button class="medal-btn"        data-med="Silver" title="Silver"><img src="images/silver.jpg" alt="Silver"></button>
+        <button class="medal-btn"        data-med="Bronze" title="Bronze"><img src="images/bronze.jpg" alt="Bronze"></button>
+      </div>
     </section>
 
     <section>
@@ -48,10 +49,11 @@
     </section>
 
     <section>
-      <h2>Geographic Medal Density</h2>
-      <div id="chart7" class="chart"></div>
+      <h2>Athletes by Discipline and Gender (Share %)</h2>
+      <div id="chart2" class="chart"></div>
     </section>
 
+  
     <section>
       <h2>Athlete Age Distribution by Sport</h2>
       <div id="chart8" class="chart"></div>
@@ -62,19 +64,27 @@
       <div id="chart9" class="chart"></div>
     </section>
 
-    <!-- <section>
-      <h2>Coaches vs Athletes by NOC (size = Total Medals)</h2>
-      <div id="chart3" class="chart"></div>
-    </section> -->
   </div>
 
   <script>
-    vegaEmbed("#chart1", "charts/chart1_medals_top20.vg.json", {actions:false});
+    vegaEmbed("#chart1", "charts/chart1_medals_top20.vg.json?v=2", {actions:false}).then(res => {
+      const view = res.view;
+
+      document.getElementById("medal-controls").addEventListener("click", (e) => {
+        const btn = e.target.closest(".medal-btn");
+        if (!btn) return;
+
+        // highlight active button
+        document.querySelectorAll(".medal-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        // ✅ This updates the Vega parameter:
+        view.signal("med", btn.dataset.med).run();
+      });
+    });
     vegaEmbed("#chart2", "charts/chart2_gender_by_discipline.vg.json", {actions:false});
-    vegaEmbed("#chart3", "charts/chart4_map.vg.json", {actions:false});
-    vegaEmbed("#chart5", "charts/chart5_sports_medal_heatmap.vg.json", {actions:false});
+    vegaEmbed("#chart3", "charts/chart4_map.vg.json", {actions:false}).catch(console.error);
     vegaEmbed("#chart6", "charts/chart6_medal_composition.vg.json", {actions:false});
-    vegaEmbed("#chart7", "charts/chart7_medal_density_map.vg.json", {actions:false});
     vegaEmbed("#chart8", "charts/chart8_age_by_sport.vg.json", {actions:false});
     vegaEmbed("#chart9", "charts/chart9_medal_efficiency.vg.json", {actions:false});
   </script>

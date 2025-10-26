@@ -1,0 +1,113 @@
+/* ---- Page width & centering ---- */
+html { background: #fff; }        /* optional */
+body {
+  width: 1200px;                  /* exact page width */
+  margin: 0 auto;                 /* center the page */
+  text-align: center;             /* center headings/text */
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+/* ---- Layout grid ---- */
+.grid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr;
+}
+
+/* ---- Chart containers (so "width: 'container'" works) ---- */
+.chart {
+  display: block;
+  width: 100%;                    /* fills the 1200px page width */
+  min-height: 320px;              /* avoids 0px height while loading */
+  margin: 0 auto;
+  background: transparent;
+}
+
+/* Ensure Vega’s internal wrapper also stretches to the container width */
+.vega-embed, .vega-embed > div {
+  width: 100% !important;
+}
+
+/* Tidy headings */
+h1, h2 { margin: 0 0 12px; }
+
+h1 {
+  margin: 0 auto 24px auto;   /* center + spacing */
+  text-align: center;         /* ensure title text is centered */
+  width: 100%;                /* makes centering consistent across viewport */
+  display: block;
+}
+
+h1 {
+  font-family: "Georgia", "Playfair Display", serif;   /* serif font */
+  font-size: 7rem;                                    /* big title */
+  font-weight: 700;                                   /* bold */
+  text-align: center;                                 /* center */
+  margin: 0 auto 32px auto;                           /* spacing below */
+  line-height: 1.2;
+}
+
+.intro {
+  max-width: 900px;
+  margin: 0 auto 40px auto;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #333;
+  text-align: justify;
+  font-family: Georgia, "Playfair Display", serif;  /* matches your serif theme */
+}
+
+h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 700;                                 /* bold weight */
+  text-align: center;
+  margin: 24px 0 12px;
+  color: #111;
+}
+
+/* Wrap container */
+.medal-controls {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin: 12px 0 20px;
+}
+
+/* Button wrapper */
+.medal-btn {
+  width: 120px;       /* ← control overall clickable size */
+  height: 120px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 50%; /* make them circular */
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease, border-color 0.2s ease;
+}
+
+/* Make all images scale evenly */
+.medal-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* ensures uniform cropping and shape */
+  border-radius: 50%;  /* ensures image stays circular inside button */
+}
+
+/* Hover and active states */
+.medal-btn:hover {
+  transform: scale(1.05);
+}
+
+.medal-btn.active {
+  border-color: #000; /* highlight selected */
+}
+
+#chart1 .vega-bindings,
+#chart1 + .vega-bindings,
+#chart1 .vega-bindings * {
+  display: none !important;
+}

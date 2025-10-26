@@ -1,11 +1,7 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {
-    "text": "Gender Representation Across Olympic Disciplines",
-    "anchor": "start"
-  },
   "background": "transparent",
-  "width": 760,
+  "width": "container",
   "height": 520,
   "data": {
     "url": "https://raw.githubusercontent.com/tylertancl/fit3179-a2/main/data/athletes.csv",

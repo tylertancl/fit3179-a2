@@ -1,7 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {"text": "Athlete Age Distribution by Sport", "anchor": "start"},
-  "width": 1000,
+  "width": "container",
   "height": 520,
   "data": {"url": "data/athletes.csv", "format": {"type": "csv"}},
   "params": [

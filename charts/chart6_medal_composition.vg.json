@@ -1,11 +1,9 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {
-    "text": "Medal Composition by Nation",
-    "anchor": "start"
-  },
+  "width": "container",
+  "height": 450,
   "data": {
-    "url": "data/medals_total.csv"
+    "url": "https://raw.githubusercontent.com/tylertancl/fit3179-a2/refs/heads/main/data/medals_total.csv"
   },
   "params": [
     {
