@@ -1,56 +1,108 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Total Olympic Medals by Country",
-  "width": 800,
-  "height": 500,
-  "projection": {"type": "equalEarth"},
+  "width": "container",
+  "height": 520,
+  "background": "transparent",
+  "projection": { "type": "naturalEarth1" },
   "layer": [
     {
-      "data": {
-        "url": "https://vega.github.io/vega-lite/data/world-110m.json",
-        "format": {"type": "topojson", "feature": "countries"}
-      },
-      "mark": {"type": "geoshape", "fill": "#eee", "stroke": "#ccc"}
+      "data": { "sphere": true },
+      "mark": {
+        "type": "geoshape",
+        "fill": "#0a1e3a",
+        "stroke": null
+      }
     },
     {
-      
       "data": {
-        "url": "https://vega.github.io/vega-lite/data/world-110m.json",
-        "format": {"type": "topojson", "feature": "countries"}
+        "url": "https://raw.githubusercontent.com/tylertancl/fit3179-a2/main/data/map_base.json",
+        "format": { "type": "topojson", "feature": "ne_110m_graticules_30" }
+      },
+      "mark": {
+        "type": "geoshape",
+        "fill": null,
+        "stroke": "#1f2f4d",
+        "strokeWidth": 0.5
+      }
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/tylertancl/fit3179-a2/main/data/map_base.json",
+        "format": { "type": "topojson", "feature": "custom.geo" }
+      },
+      "mark": {
+        "type": "geoshape",
+        "fill": "#333333",
+        "stroke": "#777777",
+        "strokeWidth": 0.3
+      }
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/tylertancl/fit3179-a2/main/data/map_base.json",
+        "format": { "type": "topojson", "feature": "custom.geo" }
       },
       "transform": [
         {
-          "calculate": "datum.properties && datum.properties.name ? datum.properties.name : datum.name",
-          "as": "name_raw"
-        },
-        {"calculate": "replace(datum.name_raw, 'United States', 'United States of America')", "as": "name_norm"},
-        {"calculate": "replace(datum.name_norm, 'Russia', 'ROC')", "as": "name_norm"},
-        {"calculate": "replace(datum.name_norm, 'Taiwan', 'Chinese Taipei')", "as": "name_norm"},
-        {"calculate": "replace(datum.name_norm, 'Iran', 'Islamic Republic of Iran')", "as": "name_norm"},
-        {"calculate": "replace(datum.name_norm, 'South Korea', 'Republic of Korea')", "as": "name_norm"},
-        {
-          "lookup": "name_norm",
+          "lookup": "properties.name",
           "from": {
-            "data": {"url": "data/medals_total.csv", "format": {"type": "csv"}},
+            "data": {
+              "url": "https://raw.githubusercontent.com/tylertancl/fit3179-a2/main/data/medals_total.csv",
+              "format": { "type": "csv" }
+            },
             "key": "Country",
-            "fields": ["Gold Medal", "Silver Medal", "Bronze Medal", "Total"]
+            "fields": [
+              "Total",
+              "Gold Medal",
+              "Silver Medal",
+              "Bronze Medal"
+            ]
           }
         },
-        {"calculate": "toNumber(datum['Gold Medal'])", "as": "GoldNum"},
-        {"calculate": "toNumber(datum['Silver Medal'])", "as": "SilverNum"},
-        {"calculate": "toNumber(datum['Bronze Medal'])", "as": "BronzeNum"},
-        {"calculate": "isValid(datum.Total) ? toNumber(datum.Total) : (datum.GoldNum + datum.SilverNum + datum.BronzeNum)", "as": "TotalMedalsNum"},
-        {"filter": "isFinite(datum.TotalMedalsNum)"}
+        { "calculate": "toNumber(datum.Total)", "as": "TotalNum" },
+        { "calculate": "toNumber(datum['Gold Medal'])", "as": "GoldNum" },
+        { "calculate": "toNumber(datum['Silver Medal'])", "as": "SilverNum" },
+        { "calculate": "toNumber(datum['Bronze Medal'])", "as": "BronzeNum" },
+        {
+          "joinaggregate": [
+            { "op": "sum", "field": "TotalNum", "as": "GrandTotal" }
+          ]
+        },
+        {
+          "calculate": "datum.GrandTotal > 0 && isValid(datum.TotalNum) ? (datum.TotalNum / datum.GrandTotal) * 100 : null",
+          "as": "Percentage"
+        },
+        { "filter": "isValid(datum.Percentage) && datum.Percentage > 0" }
       ],
-      "mark": {"type": "geoshape", "stroke": "white", "strokeWidth": 0.5},
+      "mark": {
+        "type": "geoshape",
+        "stroke": "white",
+        "strokeWidth": 0.5
+      },
       "encoding": {
-        "color": {"field": "TotalMedalsNum", "type": "quantitative", "scale": {"scheme": "blues"}, "title": "Total medals"},
+        "color": {
+          "field": "Percentage",
+          "type": "quantitative",
+          "title": "Share of total medals (%)",
+          "scale": { "scheme": "blues" },
+          "legend": {
+            "titleColor": "#FFFFFF",
+            "labelColor": "#FFFFFF",
+            "format": ".2f"
+          }
+        },
         "tooltip": [
-          {"field": "name_norm", "title": "Country"},
-          {"field": "TotalMedalsNum", "title": "Total medals"},
-          {"field": "GoldNum", "title": "Gold"},
-          {"field": "SilverNum", "title": "Silver"},
-          {"field": "BronzeNum", "title": "Bronze"}
+          { "field": "properties.name", "type": "nominal", "title": "Country" },
+          { "field": "GoldNum", "type": "quantitative", "title": "Gold" },
+          { "field": "SilverNum", "type": "quantitative", "title": "Silver" },
+          { "field": "BronzeNum", "type": "quantitative", "title": "Bronze" },
+          { "field": "TotalNum", "type": "quantitative", "title": "Total Medals" },
+          {
+            "field": "Percentage",
+            "type": "quantitative",
+            "title": "% of Total",
+            "format": ".2f"
+          }
         ]
       }
     }
